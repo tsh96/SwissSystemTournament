@@ -1,0 +1,26 @@
+* {
+    font-family: sans-serif;
+    font-size: 20px;
+}
+
+body {
+    height: 100%;
+    margin: 0;
+}
+
+div {
+    overflow-y: scroll;
+    height: 100%;
+}
+
+#title_input {
+    font-size: 20px;
+    text-align: center;
+    width: 99%;
+    font-weight: bold;
+}
+
+#players_input {
+    width: 98%;
+    margin: 0;
+}

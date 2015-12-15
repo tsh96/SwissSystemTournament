@@ -1,0 +1,61 @@
+* {
+    font-family: sans-serif;
+    text-align: center;
+}
+
+.pair {
+    position: relative;
+    font-size: 20px;
+}
+
+.pair div {
+    margin: 5px;
+    padding: 5px;
+    position: relative;
+    display: inline-block;
+
+}
+
+.player {
+    width: 300px;
+}
+
+.winner {
+    background: lightgreen;
+}
+
+.looser {
+    background: pink;
+}
+
+.next {
+    visibility: hidden;
+}
+
+.current {
+    background: lightgray;
+}
+
+.current .player {
+    border: rgb(128, 128, 128) 1px solid;
+    cursor: pointer;
+}
+
+.current .next {
+    border: rgb(128, 128, 128) 1px solid;
+    visibility: visible !important;
+    cursor: pointer;
+}
+
+.centeredDialog{
+    background-color: rgb(255, 255, 255);
+    position:absolute;
+    left:50%;
+    top:50%;
+    width: 300px;
+    height: 100px;
+    font-size: 20px;
+    margin-left: -150px;/* -1/2 width */
+    margin-top: -50px;/* -1/2 height */
+    border: rgb(0, 0, 0) 3px solid;
+}
