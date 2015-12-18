@@ -2,7 +2,42 @@
  * Created by user on 11/12/2015.
  */
 
+var date_now = Date.now();
+var storageItem = {};
+storageItem[date_now] = {};
+storageItem[date_now]["players"] = [];
+storageItem[date_now]["initial_value"] = {};
 
+function autoSave() {
+    storageItem[date_now]["number_of_tables"] = SwissTournament.number_of_tables;
+
+    var players = storageItem[date_now]["initial_value"]["players"] = [];
+    var players_length = SwissTournament.players.length;
+    for (var n = 0; n < players_length; ++n) {
+        players[n] = [SwissTournament.players[n].score, SwissTournament.players[n].state];
+    }
+
+    var groups = storageItem[date_now]["initial_value"]["groups"] = [];
+    var groups_length = SwissTournament.groups.length;
+    for (var g = 0; g < groups_length; ++g) {
+        groups[g] = [];
+        var pairs_length = SwissTournament.groups[g].length;
+        for (var p = 0; p < pairs_length; ++p) {
+            groups[g][p] = SwissTournament.groups[g][p].state;
+        }
+    }
+
+    chrome.storage.local.set(storageItem);
+}
+
+function load(id) {
+    chrome.storage.local.get(id + "", function (callback) {
+        var storageItem = callback[id + ""];
+        SwissTournament.number_of_tables = storageItem.number_of_tables;
+        SwissTournament.number_of_groups = storageItem.number_of_groups;
+        SwissTournament.load(storageItem.players, storageItem.number_of_groups, storageItem.initial_value);
+    })
+}
 
 var SwissTournament = new function () {
     this.players = [];

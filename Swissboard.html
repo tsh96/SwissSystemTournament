@@ -7,31 +7,45 @@
 </head>
 <body style="height: 100%; margin: 0;">
 
-<div style="position: absolute;width: 100%;height: 100%;overflow: scroll" >
-    <div style="position: absolute; width: 100%; min-width: 750px;" id="content">
-        <h1>Group 1</h1>
-
-        <div class="pair current">
-            <div class="player">Player 1</div>
-            vs
-            <div class="player">Player 2</div>
-            <div class="next">Next</div>
-        </div>
-        <div class="pair">
-            <div class="player winner">Player with long name 3</div>
-            vs
-            <div class="player looser">Player 4</div>
-            <div class="next">Next</div>
-        </div>
-        <br>
-
-        <h1>Group 2</h1>
-    </div>
+<div id="inputDetails">
+    <label for="number_of_table">Number of table: </label> <br>
+    <input id="number_of_table" type="number" value="2"/><br>
+    <br/>
+    <label for="number_of_group">Number of group: </label> <br>
+    <input id="number_of_group" type="number" value="2"/><br>
+    <br/>
+    <label for="players_input">Players name list: </label> <br>
+    <textarea id="players_input"></textarea><br>
+    <button id="players_submit">Submit</button>
+    <br/>
+    <!--<button id="auto_saved_list_btn">Auto-saved List</button><br/>-->
+    <div id="rounds"></div>
 </div>
 
+<div id="details">
+    <h1>Group1</h1>
 
-<script type="text/javascript" src="Constant.js"></script>
+    <div>af (0)</div>
+    <div>fda (0)</div>
+    <div>fd (0)</div>
+    <div>f (0)</div>
+    <div>da (0)</div>
+
+    <h1>Group2</h1>
+
+    <div>da (0)</div>
+    <div>fd (0)</div>
+    <div>af (0)</div>
+    <div>dsa (0)</div>
+</div>
+<div id="split_bar"></div>
+<div id="board"></div>
+
+<script type="text/javascript" src="SwissTournament.js"></script>
+<script type="text/javascript" src="players_name_input.js"></script>
+<script type="text/javascript" src="details.js"></script>
 <script type="text/javascript" src="swissboard.js"></script>
+<script type="text/javascript" src="SplitBar.js"></script>
 
 </body>
 </html>

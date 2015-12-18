@@ -16,12 +16,15 @@ function combination_2(n) {
 }
 
 function players_submit_click() {
-    chrome.runtime.sendMessage({
-        type: MessageType.INITIAL,
-        content: players_input.value,
-        number_of_groups: number_of_group.value,
-        number_of_tables: number_of_table.value
-    });
+    document.getElementById("inputDetails").style.display = "none";
+    SwissTournament.number_of_tables = number_of_table.value;
+    SwissTournament.number_of_groups = number_of_group.value;
+    SwissTournament.initiate(players_input.value);
+    drawBoard();
+    for (var n = 0; n < SwissTournament.number_of_tables; ++n) {
+        next();
+    }
+    updateDetails();
 }
 
 var rounds_output = document.getElementById("rounds");
