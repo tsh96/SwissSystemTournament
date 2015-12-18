@@ -36,11 +36,11 @@ function drawBoard() {
 
             var player1HTML = player_proto.cloneNode(false);
             player1HTML.innerText = player1.name + " (" + player1.score + ")";
-            player1HTML.id = player1.id;
+            player1HTML.player = player1;
 
             var player2HTML = player_proto.cloneNode(false);
             player2HTML.innerText = player2.name + " (" + player2.score + ")";
-            player2HTML.id = player2.id;
+            player2HTML.player = player2;
 
             if (pair.state == 1) {
                 player1HTML.className = "player winner";
@@ -53,7 +53,7 @@ function drawBoard() {
             var nextHTML = next_proto.cloneNode(true);
 
             var pairHTML = pair_proto.cloneNode(false);
-            pairHTML.state = 0;
+            pairHTML.pair = pair;
             pairHTML.appendChild(player1HTML);
             pairHTML.appendChild(vs_proto.cloneNode(true));
             pairHTML.appendChild(player2HTML);
@@ -64,27 +64,41 @@ function drawBoard() {
     }
 }
 
-function updateState(g, p, offset, state) {
-    var pair = document.getElementsByClassName("pair")[offset];
+function updateState(pair, state) {
     if (pair.state == state) return;
+
+    switch (state) {
+        case 1:
+            pair.player1.score++;
+            break;
+        case 2:
+            pair.player2.score++;
+            break;
+    }
+
+    switch (pair.state) {
+        case 1:
+            pair.player1.score--;
+            break;
+        case 2:
+            pair.player2.score--;
+            break;
+    }
+
     pair.state = state;
 
-    SwissTournament.updateState(g, p, offset, state);
-
-    var players = SwissTournament.players;
     var playersHTML = document.getElementsByClassName("player");
     var playersHTML_length = playersHTML.length;
     for (var n = 0; n < playersHTML_length; ++n) {
         var player = playersHTML[n];
-        player.innerText = players[player.id].name + " (" + players[player.id].score + ")";
+        player.innerText = player.player.name + " (" + player.player.score + ")";
     }
 
     updateDetails();
-    //autoSave();
-
+    autoSave();
 }
 
-function coverDialog(g, p, offset, state) {
+function coverDialog(pair, offset, state) {
     var pairHTML = document.getElementsByClassName("pair")[offset];
     if (pairHTML.state == state) return;
 
@@ -108,7 +122,7 @@ function coverDialog(g, p, offset, state) {
             coverHTML.remove();
             dialogHTML.remove();
             if (inputHTML.value == "CHANGE") {
-                updateState(g, p, offset, state);
+                updateState(pair, state);
                 switch (state) {
                     case 1:
                         player1HTML.className = "player winner";
@@ -124,13 +138,11 @@ function coverDialog(g, p, offset, state) {
     };
 
     dialogHTML.appendChild(inputHTML);
-
     document.body.appendChild(dialogHTML);
-
 }
 
-function next(g, p, offset, state) {
-    var feedback = SwissTournament.next(g, p, offset, state);
+function next(pair, offset, state) {
+    var feedback = SwissTournament.next(pair, offset, state);
     if (!feedback) return;
     var pairHTML = document.getElementsByClassName("pair")[feedback.offset];
     var player1HTML = pairHTML.getElementsByClassName("player")[0];
@@ -141,12 +153,12 @@ function next(g, p, offset, state) {
     function nextClick() {
         pairHTML.classList.remove("current");
         player1HTML.onclick = function () {
-            coverDialog(feedback.g, feedback.p, feedback.offset, 1);
+            coverDialog(feedback.pair, feedback.offset, 1);
         };
         player2HTML.onclick = function () {
-            coverDialog(feedback.g, feedback.p, feedback.offset, 2);
+            coverDialog(feedback.pair, feedback.offset, 2);
         };
-        next(feedback.g, feedback.p, feedback.offset, pairHTML.state);
+        next(pairHTML.pair, feedback.offset, pairHTML.pair.state);
         var repeat = number_of_tables - document.getElementsByClassName("current").length - 1;
         for (var n = 0; n < repeat; ++n)
             next();
@@ -156,13 +168,15 @@ function next(g, p, offset, state) {
     player1HTML.onclick = function () {
         player1HTML.className = "player winner";
         player2HTML.className = "player looser";
-        updateState(feedback.g, feedback.p, feedback.offset, 1);
+
+        updateState(feedback.pair, 1);
     };
 
     player2HTML.onclick = function () {
         player1HTML.className = "player looser";
         player2HTML.className = "player winner";
-        updateState(feedback.g, feedback.p, feedback.offset, 2);
+
+        updateState(feedback.pair, 2);
     };
 
     pairHTML.classList.add("current");

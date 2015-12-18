@@ -33,9 +33,16 @@ function autoSave() {
 function load(id) {
     chrome.storage.local.get(id + "", function (callback) {
         var storageItem = callback[id + ""];
-        SwissTournament.number_of_tables = storageItem.number_of_tables;
-        SwissTournament.number_of_groups = storageItem.number_of_groups;
-        SwissTournament.load(storageItem.players, storageItem.number_of_groups, storageItem.initial_value);
+        SwissTournament.number_of_tables = parseInt(storageItem.number_of_tables);
+        SwissTournament.number_of_groups = parseInt(storageItem.number_of_groups);
+        SwissTournament.load(storageItem.players, SwissTournament.number_of_groups, storageItem.initial_value);
+
+        document.getElementById("inputDetails").style.display = "none";
+        drawBoard();
+        for (var n = 0; n < SwissTournament.number_of_tables; ++n) {
+            next();
+        }
+        updateDetails();
     })
 }
 
@@ -45,11 +52,10 @@ var SwissTournament = new function () {
     this.groups_players = [];
     this.number_of_groups = 0;
 
-    function Player(name, id) {
+    function Player(name) {
         this.name = name;
         this.score = 0;
         this.state = 0;
-        this.id = id;
         // 0 = inactive
         // 1 = playing
     }
@@ -85,7 +91,7 @@ var SwissTournament = new function () {
         var players_length = players_array.length;
         this.number_of_groups = number_of_groups;
         for (var n = 0; n < players_length; ++n) {
-            this.players[n] = new Player(players_array[n], n);
+            this.players[n] = new Player(players_array[n]);
         }
 
         this.sort();
@@ -139,10 +145,10 @@ var SwissTournament = new function () {
         }
     };
 
-    this.next = function (_g, _p, _offset, _state) {
-        if (_g != null && _p != null) {
-            var _pair = this.groups[_g][_p];
+    this.next = function (_pair, _offset, _state) {
+        if (_pair != null) {
             _pair.player1.state = _pair.player2.state = 0;
+            console.log(_state, _state == 0 ? -1 : _state);
             _pair.state = _state == 0 ? -1 : _state;
         }
 
@@ -154,12 +160,12 @@ var SwissTournament = new function () {
             var pairs_length = group.length;
             for (var p = 0; p < pairs_length; ++p) {
                 offset++;
-                if (g == _g && p == _p) continue;
                 var pair = group[p];
+                if (_pair == pair) continue;
                 if (!(pair.player1.state || pair.player2.state) && pair.state == -1) {
                     pair.player1.state = pair.player2.state = 1;
                     pair.state = 0;
-                    return {g: g, p: p, offset: --offset};
+                    return {pair: pair, offset: --offset};
                 }
             }
         }
@@ -167,12 +173,12 @@ var SwissTournament = new function () {
         if (_state == 0) {
             _pair.player1.state = pair.player2.state = 1;
             _pair.state = 0;
-            return {g: _g, p: _p, offset: _offset};
+            return {pair: _pair, offset: _offset};
         }
 
     };
 
-    this.updateState = function (g, p, offset, state) {
+    this.updateState = function (g, p, state) {
         var pair = this.groups[g][p];
         if (pair.state == state)return;
 

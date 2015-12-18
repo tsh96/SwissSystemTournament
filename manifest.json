@@ -8,9 +8,7 @@
   "app": {
     "background": {
       "scripts": [
-        "background.js",
-        "Constant.js",
-        "SwissTournament.js"
+        "background.js"
       ]
     }
   }

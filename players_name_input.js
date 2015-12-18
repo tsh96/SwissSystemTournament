@@ -47,5 +47,23 @@ number_of_group.onblur = players_input.onblur = function () {
 };
 
 chrome.storage.local.get(null, function (callback) {
+    var storageIDs = Object.keys(callback);
+    storageIDs.sort(function (a, b) {
+        return a - b;
+    });
 
+    var length = storageIDs.length;
+    var auto_save_list = document.getElementById("auto_save_list");
+    for (var n = 0; n < length; n++) {
+        var storageID = storageIDs[n];
+        var link = document.createElement("a");
+        link.href = "";
+        link.innerHTML = new Date(parseInt(storageIDs[n])).toLocaleString() + "<br>";
+        link.onclick = (function (storageID) {
+            return function () {
+                load(storageID);
+            };
+        })(storageID);
+        auto_save_list.appendChild(link);
+    }
 });
